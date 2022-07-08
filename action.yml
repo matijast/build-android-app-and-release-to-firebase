@@ -5,19 +5,19 @@ inputs:
     description: 'Java version specification'
     required: false
     default: 11
-   tester-groups:
-     description: 'Groups to invite to test apk'
-     required: true
-   release-notes:
-     description: 'Release notes for firebase app distribution'
-     required: false
-     default: 'Debug Version'
-   firebase-app-id:
-     description: "Firebase App ID"
-     required: true
-   firebase-token:
-     description: "Firebase CLI Token"
-     required: true
+  tester-groups:
+    description: 'Groups to invite to test apk'
+    required: true
+  release-notes:
+    description: 'Release notes for firebase app distribution'
+    required: false
+    default: 'Debug Version'
+  firebase-app-id:
+    description: "Firebase App ID"
+    required: true
+  firebase-token:
+    description: "Firebase CLI Token"
+    required: true
 
 outputs:
   return-value: 
