@@ -51,6 +51,7 @@ runs:
     
     - name: Build Debug
       run: ./gradlew assembleDebug
+      shell: bash
     
     - name: Upload to Firebase and invite testers
       uses: wzieba/Firebase-Distribution-Github-Action@v1.3.3
