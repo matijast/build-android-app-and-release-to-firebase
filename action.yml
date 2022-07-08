@@ -1,0 +1,66 @@
+name: 'Build and upload to firebase'
+description: 'Build Android app, upload to firebase app distribution and invite testers'
+inputs:
+  java-version: # id of this input
+    description: 'Java version specification'
+    required: false
+    default: 11
+   tester-groups:
+     description: 'Groups to invite to test apk'
+     required: true
+   release-notes:
+     description: 'Release notes for firebase app distribution'
+     required: false
+     default: 'Debug Version'
+   firebase-app-id:
+     description: "Firebase App ID"
+     required: true
+   firebase-token:
+     description: "Firebase CLI Token"
+     required: true
+
+outputs:
+  return-value: 
+    description: "Release note and goodbye"
+    value: ${{ steps.return-message.outputs.goodbye }}
+
+runs:
+  using: "composite"
+  
+  steps: 
+     
+    - name: Checkout repository
+      uses: actions/checkout@v3
+   
+    - name: Setup JDK
+      uses: actions/setup-java@v1
+      with:
+        java-version: ${{ inputs.java-version }}
+    
+    - name: Setup Gradle Wrapper
+      uses: actions/cache@v2
+      with:
+        path: ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+   
+    - name: Setup Gradle Dependencies
+      uses: actions/cache@v2
+      with:
+        path: ~/.gradle/caches
+        key: ${{ runner.os }}-gradle-caches-${{ hashFiles('**/*.gradle*') }}
+    
+    - name: Build Debug
+      run: ./gradlew assembleDebug
+    
+    - name: Upload to Firebase and invite testers
+      uses: wzieba/Firebase-Distribution-Github-Action@v1.3.3
+      with:
+        appId: ${{ inputs.firebase-app-id }}
+        token: ${{ inputs.firebase-token }}
+        groups: ${{ inputs.tester-groups }}
+        releaseNotes: ${{ inputs.release-notes }}
+    
+    - id: return-message
+      run: echo "::set-output name=goodbye::$(echo Release notes are ${{inputs.release-notes}}. Thanks and goodbye!)"
+      shell: bash
+      
