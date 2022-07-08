@@ -59,6 +59,7 @@ runs:
         appId: ${{ inputs.firebase-app-id }}
         token: ${{ inputs.firebase-token }}
         groups: ${{ inputs.tester-groups }}
+        file: app/build/outputs/apk/debug/app-debug.apk
         releaseNotes: ${{ inputs.release-notes }}
     
     - id: return-message
