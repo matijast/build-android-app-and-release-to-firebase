@@ -26,12 +26,15 @@ on:
 
     outputs:
       return-value: 
-        description: "Release note and goodbye"
-        value: ${{ steps.return-message.outputs.goodbye }}
+        description: "Return message of build job"
+        value: ${{ jobs.build-job.outputs.output-string }}
 
 jobs:
   build-job:
     runs-on: ubuntu-latest
+    
+    outputs:
+      output-string: ${{ steps.return-message.outputs.goodbye }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
