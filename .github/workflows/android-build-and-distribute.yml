@@ -31,39 +31,41 @@ on:
 
 jobs:
   build-job:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
    
-    - name: Setup JDK
-      uses: actions/setup-java@v1
-      with:
-        java-version: ${{ inputs.java-version }}
+      - name: Setup JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ inputs.java-version }}
     
-    - name: Setup Gradle Wrapper
-      uses: actions/cache@v2
-      with:
-        path: ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+      - name: Setup Gradle Wrapper
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
    
-    - name: Setup Gradle Dependencies
-      uses: actions/cache@v2
-      with:
-        path: ~/.gradle/caches
-        key: ${{ runner.os }}-gradle-caches-${{ hashFiles('**/*.gradle*') }}
+      - name: Setup Gradle Dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-caches-${{ hashFiles('**/*.gradle*') }}
     
-    - name: Build Debug
-      run: ./gradlew assembleDebug
-      shell: bash
+      - name: Build Debug
+        run: ./gradlew assembleDebug
+        shell: bash
     
-    - name: Upload to Firebase and invite testers
-      uses: wzieba/Firebase-Distribution-Github-Action@v1.3.3
-      with:
-        appId: ${{ secrets.firebase-app-id }}
-        token: ${{ secrets.firebase-token }}
-        groups: ${{ inputs.tester-groups }}
-        file: app/build/outputs/apk/debug/app-debug.apk
-        releaseNotes: ${{ inputs.release-notes }}
+      - name: Upload to Firebase and invite testers
+        uses: wzieba/Firebase-Distribution-Github-Action@v1.3.3
+        with:
+          appId: ${{ secrets.firebase-app-id }}
+          token: ${{ secrets.firebase-token }}
+          groups: ${{ inputs.tester-groups }}
+          file: app/build/outputs/apk/debug/app-debug.apk
+          releaseNotes: ${{ inputs.release-notes }}
     
-    - id: return-message
-      run: echo "::set-output name=goodbye::$(echo Release notes are > ${{inputs.release-notes}} <. Thanks and goodbye!)"
-      shell: bash
+      - id: return-message
+        run: echo "::set-output name=goodbye::$(echo Release notes are > ${{inputs.release-notes}} <. Thanks and goodbye!)"
+        shell: bash
