@@ -70,7 +70,7 @@ jobs:
 #           releaseNotes: ${{ inputs.release-notes }}
     
       - id: return-message
-        run: echo "::set-output name=goodbye::$(echo Release notes are \> ${{inputs.release-notes}} \<. Thanks and goodbye!)"
+        run: echo "::set-output name=goodbye::$(echo Release notes are ' ${{inputs.release-notes}} '. Thanks and goodbye!)"
         shell: bash
   
   test-job:
