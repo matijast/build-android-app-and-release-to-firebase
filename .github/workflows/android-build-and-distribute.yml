@@ -27,55 +27,56 @@ on:
     outputs:
       return-value: 
         description: "Return message of build job"
-        value: ${{ jobs.build-job.outputs.output-string }}
+        value: ${{ jobs.reusable-workflow-build-job.outputs.output-string }}
 
 jobs:
-  build-job:
+  reusable-workflow-build-job:
     runs-on: ubuntu-latest
     
     outputs:
       output-string: ${{ steps.return-message.outputs.goodbye }}
+      
     steps:
-#       - name: Checkout repository
-#         uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
    
-#       - name: Setup JDK
-#         uses: actions/setup-java@v1
-#         with:
-#           java-version: ${{ inputs.java-version }}
+      - name: Setup JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ inputs.java-version }}
     
-#       - name: Setup Gradle Wrapper
-#         uses: actions/cache@v2
-#         with:
-#           path: ~/.gradle/wrapper
-#           key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
+      - name: Setup Gradle Wrapper
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
    
-#       - name: Setup Gradle Dependencies
-#         uses: actions/cache@v2
-#         with:
-#           path: ~/.gradle/caches
-#           key: ${{ runner.os }}-gradle-caches-${{ hashFiles('**/*.gradle*') }}
+      - name: Setup Gradle Dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-caches-${{ hashFiles('**/*.gradle*') }}
     
-#       - name: Build Debug
-#         run: ./gradlew assembleDebug
-#         shell: bash
+      - name: Build Debug
+        run: ./gradlew assembleDebug
+        shell: bash
     
-#       - name: Upload to Firebase and invite testers
-#         uses: wzieba/Firebase-Distribution-Github-Action@v1.3.3
-#         with:
-#           appId: ${{ secrets.firebase-app-id }}
-#           token: ${{ secrets.firebase-token }}
-#           groups: ${{ inputs.tester-groups }}
-#           file: app/build/outputs/apk/debug/app-debug.apk
-#           releaseNotes: ${{ inputs.release-notes }}
+      - name: Upload to Firebase and invite testers
+        uses: wzieba/Firebase-Distribution-Github-Action@v1.3.3
+        with:
+          appId: ${{ secrets.firebase-app-id }}
+          token: ${{ secrets.firebase-token }}
+          groups: ${{ inputs.tester-groups }}
+          file: app/build/outputs/apk/debug/app-debug.apk
+          releaseNotes: ${{ inputs.release-notes }}
     
       - id: return-message
         run: echo "::set-output name=goodbye::$(echo Release notes are ' ${{inputs.release-notes}} '. Thanks and goodbye!)"
         shell: bash
   
-  test-job:
-    needs: build-job
+  reusable-workflow-post-build-job:
+    needs: reusable-workflow-build-job
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{ needs.build-job.outputs.output-string }}
+      - run: echo ${{ needs.reusable-workflow-build-job.outputs.output-string }}
         shell: bash
